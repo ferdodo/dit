@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "esbuild main.ts --bundle --outfile=public/bundle.js"
+    "build": "esbuild --define:__VUE_OPTIONS_API__=false --define:__VUE_PROD_DEVTOOLS__=false main.ts --minify --bundle --outfile=public/bundle.js"
   },
   "keywords": [],
   "author": "",
