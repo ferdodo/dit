@@ -11,7 +11,7 @@ const todayPrompt = defineComponent({
 
 	setup() {
 		function promptTask () {
-			const task: Task | null = prompt();
+			const task: Task | null = prompt("What is your today's task ?");
 
 			if (task) {
 				setTodaysTask(task);

@@ -2,15 +2,16 @@
 
 
 html {
-    height: 100%;
-    overflow: hidden;
+	height: 100%;
+	overflow: hidden;
 }
 
 body {
 	background: linear-gradient(355deg, rgb(225 175 91) 0%, hsl(31deg 60% 42%) 100%);
-    font-size: 8vw;
-    color: wheat;
-    height: 74%;
-    font-family: serif;
-    padding: 12.5vh 20vw;
+	font-size: 6vw;
+	color: wheat;
+	height: 74%;
+	font-family: serif;
+	padding: 12.5vh 20vw;
+	user-select: none;
 }
