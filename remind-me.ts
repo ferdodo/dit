@@ -1,6 +1,7 @@
 import { todaysTask$, Task } from "./tasks";
 
 export async function remindMe () {
+	await waitTenSeconds();
 	const permission: NotificationPermission = await askPermission();
 	let todaysTask;
 
@@ -12,15 +13,22 @@ export async function remindMe () {
 
 	if (permission === "granted"){
 		while (true) {
-			await waitThreeHours();
+			await waitTenSeconds();
 
 			if (todaysTask) {
 				break;
 			}
 			
 			new Notification("Hey ! I noticed you haven't planned to do anything productive today... 😔");
+			await waitThreeHours();
 		}
 	}
+}
+
+function waitTenSeconds() : Promise<void> {
+	return new Promise(function (resolve) {
+		setTimeout(resolve, 1000* 10 );
+	});
 }
 
 function waitThreeHours() : Promise<void> {
