@@ -1,0 +1,19 @@
+{
+  "name": "dit",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "esbuild main.ts --bundle --outfile=public/bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.14.27",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "rxjs": "^7.5.5",
+    "vue": "^3.2.31"
+  }
+}
