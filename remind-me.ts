@@ -38,7 +38,7 @@ function waitThreeHours() : Promise<void> {
 }
 
 function askPermission() : Promise<NotificationPermission> {
-	if (Notification.permission === "default"){
+	if (Notification.permission !== "granted"){
 		return Notification.requestPermission();
 	} else {
 		return Promise.resolve(Notification.permission);
