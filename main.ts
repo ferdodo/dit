@@ -14,7 +14,8 @@ const todayPrompt = defineComponent({
 			const task: Task | null = prompt();
 
 			if (task) {
-				setTodaysTask(task);	
+				setTodaysTask(task);
+				new Notification("A new task has been saved 🚀");
 			}
 		}
 
