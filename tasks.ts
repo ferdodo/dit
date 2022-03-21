@@ -1,32 +1,25 @@
 import { dbSet, dbGet } from "./nosql-db";
 import { BehaviorSubject } from 'rxjs';
 
-const todaysTask: Task | undefined = getTodaysTask();
-export const todaysTask$: BehaviorSubject<Task | undefined> = new BehaviorSubject(todaysTask);
-
-export type Task = string;
-
-function getTodaysTask() : Task | undefined {
-	const today: Date = getToday();
-	const key: string = getKey(today);
-	return dbGet(key);
-}
-
-export function setTodaysTask(task: Task) {
-	const today: Date = getToday();
-	const key: string = getKey(today);
-	dbSet(key, task);
-	todaysTask$.next(task);
-}
-
-function getKey(date: Date): string {
+function getTodaysTaskId(): string {
 	const version = "1";
-	var dd = String(date.getDate()).padStart(2, '0');
-	var mm = String(date.getMonth() + 1).padStart(2, '0');
-	var yyyy = date.getFullYear();
+	const today: Date = new Date();
+	const dd: string = String(today.getDate()).padStart(2, '0');
+	const mm: string = String(today.getMonth() + 1).padStart(2, '0');
+	const yyyy: number = today.getFullYear();
 	return mm + '/' + dd + '/' + yyyy + '/' + version;
 }
 
-function getToday() : Date {
-	return new Date();
+const todaysTaskId: string = getTodaysTaskId();
+const todaysTask: Task = dbGet(todaysTaskId);
+export const todaysTask$: BehaviorSubject<Task> = new BehaviorSubject(todaysTask);
+
+export type Task = string | null;
+
+export function promptTask () {
+	const task: Task = prompt("What is your today's task ?");
+	const key: string = getTodaysTaskId();
+	dbSet(key, task);
+	todaysTask$.next(task);
+	new Notification("A new task has been saved. 🚀 See you tomorrow !");
 }

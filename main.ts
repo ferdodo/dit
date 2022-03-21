@@ -1,69 +1,29 @@
-import { createApp, h as createElement, defineComponent, ref } from "vue";
-import { Task, todaysTask$, setTodaysTask } from "./tasks";
+import { createApp, h as createElement, ref, Ref, onUnmounted } from "vue";
+import { Task, todaysTask$, promptTask } from "./tasks";
 import { remindMe } from "./remind-me";
+import { Subscription } from "rxjs";
 
 remindMe().catch(console.error);
 
-const todayPrompt = defineComponent({
-	render (component) {
-		return createElement('p', { onClick: component.promptTask }, 'What productive thing will you do today ?');
-	},
-
-	setup() {
-		function promptTask () {
-			const task: Task | null = prompt("What is your today's task ?");
-
-			if (task) {
-				setTodaysTask(task);
-				new Notification("A new task has been saved. 🚀 See you tomorrow !");
-			}
-		}
-
-		return {
-			promptTask
-		};
-	}
-});
-
-const todayDisplay = defineComponent({
-	render(component) {
-		return createElement('p', component.todaysTask);
-	},
-	setup() {
-		const todaysTask = ref();
-		
-		todaysTask$.subscribe({
-			next(task: Task | undefined){
-				todaysTask.value = task;
-			}
-		});
-
-		return {
-			todaysTask	
-		};
-	}
-});
-
 const app = createApp({
-	render (app) {
+	render(app) {
 		return createElement('div', [
 			app.todaysTask
-				? createElement(todayDisplay)
-				: createElement(todayPrompt)
+				? createElement('p', app.todaysTask)
+				: createElement('p', { onClick: app.promptTask }, 'What productive thing will you do today ?')
 		]);
 	},
-	setup (){
-		const todaysTask = ref();
-		
-		todaysTask$.subscribe({
-			next(task: Task | undefined){
-				todaysTask.value = task;
+	setup() {
+		const todaysTask: Ref<Task> = ref(null);
+
+		const subscription: Subscription = todaysTask$.subscribe({
+			next(value: Task){
+				todaysTask.value = value;
 			}
 		});
 
-		return {
-			todaysTask	
-		};
+		onUnmounted(() => subscription.unsubscribe());
+		return { todaysTask, promptTask };
 	}
 });
 
