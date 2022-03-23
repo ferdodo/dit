@@ -11,24 +11,12 @@ export async function remindMe () {
 		}
 	});
 
-	await waitTenSeconds();
+	await new Promise(r => setTimeout(r, 1000 * 10));
 
 	while (!todaysTask) {
 		createNotification("Hey ! I noticed you haven't planned to do anything productive today... 😔");
-		await waitThreeHours();
+		await new Promise(r => setTimeout(r, 1000 * 3600 * 3));
 	}
 
 	subscription.unsubscribe();
-}
-
-function waitTenSeconds(): Promise<void> {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, 1000 * 10);
-	});
-}
-
-function waitThreeHours(): Promise<void> {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, 1000 * 3600 * 3);
-	});
 }
