@@ -11,29 +11,24 @@ export async function remindMe () {
 		}
 	});
 
-	while (true) {
-		await waitTenSeconds();
+	await waitTenSeconds();
 
-		if (todaysTask) {
-			break;
-		} else {
-			createNotification("Hey ! I noticed you haven't planned to do anything productive today... 😔");
-		}
-		
+	while (!todaysTask) {
+		createNotification("Hey ! I noticed you haven't planned to do anything productive today... 😔");
 		await waitThreeHours();
 	}
 
 	subscription.unsubscribe();
 }
 
-function waitTenSeconds() : Promise<void> {
+function waitTenSeconds(): Promise<void> {
 	return new Promise(function (resolve) {
-		setTimeout(resolve, 1000* 10 );
+		setTimeout(resolve, 1000 * 10);
 	});
 }
 
-function waitThreeHours() : Promise<void> {
+function waitThreeHours(): Promise<void> {
 	return new Promise(function (resolve) {
-		setTimeout(resolve, 1000* 3600 * 3);
+		setTimeout(resolve, 1000 * 3600 * 3);
 	});
 }
