@@ -3,10 +3,10 @@ import { createNotification } from "./notification";
 import { Subscription } from "rxjs";
 
 export async function remindMe () {
-	let todaysTask: Task | undefined;
+	let todaysTask: Task = null;
 
 	const subscription: Subscription = todaysTask$.subscribe({
-		next(task: Task | undefined){
+		next(task: Task){
 			todaysTask = task;
 		}
 	});
