@@ -2,14 +2,16 @@
 	"name":"Do it today",
 	"short_name":"Dit",
 	"icons":[{
-			"src":"/android-chrome-192x192.png",
-			"sizes":"192x192","type":"image/png"
-		},{
-			"src":"/android-chrome-512x512.png",
-			"sizes":"512x512",
-			"type":"image/png"
+		"src":"/android-chrome-192x192.png",
+		"sizes":"192x192","type":"image/png"
+	},{
+		"src":"/android-chrome-512x512.png",
+		"sizes":"512x512",
+		"type":"image/png"
 	}],
 	"theme_color":"#ab6d2b",
 	"background_color":"#ab6d2b",
-	"display":"standalone"
+	"display":"standalone",
+	"prefer_related_applications": false,
+	"start_url": "."
 }
