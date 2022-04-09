@@ -1,7 +1,6 @@
-import { createApp, h as createElement, ref, Ref, onUnmounted } from "vue";
+import { createApp, h as createElement, ref, Ref } from "vue";
 import { Task, todaysTask$, promptTask } from "./tasks";
 import { remindMe } from "./remind-me";
-import { Subscription } from "rxjs";
 
 remindMe().catch(console.error);
 
@@ -15,14 +14,7 @@ const app = createApp({
 	},
 	setup() {
 		const todaysTask: Ref<Task> = ref(null);
-
-		const subscription: Subscription = todaysTask$.subscribe({
-			next(value: Task){
-				todaysTask.value = value;
-			}
-		});
-
-		onUnmounted(() => subscription.unsubscribe());
+		todaysTask$.subscribe((value: Task) => todaysTask.value = value);
 		return { todaysTask, promptTask };
 	}
 });
