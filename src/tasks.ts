@@ -2,12 +2,12 @@ import { dbSet, dbGet, dbUpdates } from "./nosql-db";
 import { BehaviorSubject } from 'rxjs';
 
 function getTodaysTaskId(): string {
-	const version = "1";
+	const version = "2";
 	const today: Date = new Date();
 	const dd: string = String(today.getDate()).padStart(2, '0');
 	const mm: string = String(today.getMonth() + 1).padStart(2, '0');
 	const yyyy: number = today.getFullYear();
-	return mm + '/' + dd + '/' + yyyy + '/' + version;
+	return yyyy + '/' + mm + '/' + dd + '/' + version;
 }
 
 type Task = string | null;
