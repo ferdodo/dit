@@ -1,4 +1,4 @@
-import { dbSet, dbGet } from "./nosql-db";
+import { dbSet, dbGet, dbUpdates } from "./nosql-db";
 import { BehaviorSubject } from 'rxjs';
 
 function getTodaysTaskId(): string {
@@ -10,16 +10,20 @@ function getTodaysTaskId(): string {
 	return mm + '/' + dd + '/' + yyyy + '/' + version;
 }
 
+type Task = string | null;
 const todaysTaskId: string = getTodaysTaskId();
 const todaysTask: Task = dbGet(todaysTaskId);
-export const todaysTask$: BehaviorSubject<Task> = new BehaviorSubject(todaysTask);
+const todaysTask$: BehaviorSubject<Task> = new BehaviorSubject(todaysTask);
 
-export type Task = string | null;
+dbUpdates.addEventListener(todaysTaskId, function (event: Event) {
+	todaysTask$.next((event as CustomEvent).detail);
+});
+
+export { Task, todaysTask$ };
 
 export function promptTask () {
 	const task: Task = prompt("What is your today's task ?");
 	const key: string = getTodaysTaskId();
 	dbSet(key, task);
-	todaysTask$.next(task);
 	new Notification("A new task has been saved. 🚀 See you tomorrow !");
 }
