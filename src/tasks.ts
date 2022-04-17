@@ -1,5 +1,5 @@
 import { dbSet, dbGet, dbUpdates } from "./nosql-db";
-import { BehaviorSubject } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 
 function getTodaysTaskId(): string {
 	const version = "2";
@@ -10,20 +10,53 @@ function getTodaysTaskId(): string {
 	return yyyy + '/' + mm + '/' + dd + '/' + version;
 }
 
-type Task = string | null;
-const todaysTaskId: string = getTodaysTaskId();
-const todaysTask: Task = dbGet(todaysTaskId);
-const todaysTask$: BehaviorSubject<Task> = new BehaviorSubject(todaysTask);
+function getTimeToTomorrow(): number {
+  const now = new Date();
+  const hour = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  const totalSecondsToday = (hour * 60 + minutes) * 60 + seconds;
+  const totalSecondsInADay = 86400;
+  const margin = 1;
+  return (totalSecondsInADay - totalSecondsToday + margin) * 1000;
+}
 
-dbUpdates.addEventListener(todaysTaskId, function (event: Event) {
-	todaysTask$.next((event as CustomEvent).detail);
+export type Task = string | null;
+let todaysTaskId: string = getTodaysTaskId();
+let todaysTask: Task = dbGet(todaysTaskId);
+
+export const todaysTask$: Observable<Task> = new Observable(function(subscriber: Subscriber<Task>) {
+	subscriber.next(todaysTask);
+
+	function taskUpdateListener(event: Event) {
+		todaysTask = (event as CustomEvent).detail;
+		subscriber.next(todaysTask);
+	}
+
+	dbUpdates.addEventListener(todaysTaskId, taskUpdateListener);
+
+	async function handleFutureDays() {
+		while (true) {
+			const timeUntilTomorrow: number = getTimeToTomorrow();
+			await new Promise(r => setTimeout(r, timeUntilTomorrow));
+			dbUpdates.removeEventListener(todaysTaskId, taskUpdateListener);
+			todaysTaskId = getTodaysTaskId();
+			todaysTask = dbGet(todaysTaskId);
+			subscriber.next(todaysTask);
+			dbUpdates.addEventListener(todaysTaskId, taskUpdateListener);
+		}
+	}
+
+	handleFutureDays().catch(console.error);
 });
 
-export { Task, todaysTask$ };
-
-export function promptTask () {
+export function promptTask() {
 	const task: Task = prompt("What is your today's task ?");
 	const key: string = getTodaysTaskId();
 	dbSet(key, task);
 	new Notification("A new task has been saved. 🚀 See you tomorrow !");
+}
+
+export function getTodaysTask(): Task {
+	return todaysTask;
 }
